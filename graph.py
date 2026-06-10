@@ -14,7 +14,7 @@ from db import (
     guardar_mensaje, cargar_historial, crear_orden,
 )
 from notifier import (
-    send_text, send_catalogo, send_datos_pago,
+    send_text, send_video, send_catalogo, send_datos_pago,
     notify_camilo, notify_escalar,
 )
 
@@ -141,7 +141,10 @@ def nodo_enviar_y_actuar(state: FIDELIOState) -> dict:
 
     send_text(phone, mensaje)
 
-    if signal == "ENVIAR_CATALOGO":
+    if signal == "ENVIAR_VIDEO":
+        send_video(phone)
+
+    elif signal == "ENVIAR_CATALOGO":
         send_catalogo(phone)
 
     elif signal == "ENVIAR_DATOS_PAGO":

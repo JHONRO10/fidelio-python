@@ -40,6 +40,7 @@ ESTADO_INICIAL = "esperando_reaccion_inicial"
 
 ESTADOS_VALIDOS = {
     "esperando_reaccion_inicial",
+    "video_enviado",
     "catalogo_enviado",
     "esperando_eleccion_diseno",
     "diseno_elegido",
@@ -52,6 +53,7 @@ ESTADOS_VALIDOS = {
 
 SIGNALS_VALIDAS = {
     "NORMAL",
+    "ENVIAR_VIDEO",
     "ENVIAR_CATALOGO",
     "ENVIAR_DATOS_PAGO",
     "REGISTRAR_PAGO",

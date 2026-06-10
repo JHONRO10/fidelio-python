@@ -10,7 +10,8 @@ EVOLUTION_URL = os.environ.get("EVOLUTION_API_URL", "")
 EVOLUTION_KEY = os.environ.get("EVOLUTION_API_KEY", "")
 EVOLUTION_INSTANCE = os.environ.get("EVOLUTION_INSTANCE", "")
 
-CATALOGO_PDF_URL = os.environ.get("CATALOGO_PDF_URL", "")  # URL pública del PDF en Drive o Supabase
+CATALOGO_PDF_URL = os.environ.get("CATALOGO_PDF_URL", "")
+VIDEO_PRODUCTO_URL = os.environ.get("VIDEO_PRODUCTO_URL", "")
 CAMILO_PHONE = os.environ.get("CAMILO_PHONE", "573164721093")
 
 DATOS_PAGO = (
@@ -67,11 +68,32 @@ def send_document(phone: str, url: str, caption: str = "") -> bool:
         return False
 
 
+def send_video(phone: str) -> bool:
+    """Envía el video del producto."""
+    try:
+        res = requests.post(
+            f"{_base_url()}/sendMedia/{EVOLUTION_INSTANCE}",
+            headers=_headers(),
+            json={
+                "number": phone,
+                "mediatype": "video",
+                "mimetype": "video/mp4",
+                "media": VIDEO_PRODUCTO_URL,
+                "caption": "🎮 Mira cómo quedan los cuelga llaves Sublime Store 🔥",
+            },
+            timeout=20,
+        )
+        return res.status_code == 201
+    except Exception as e:
+        print(f"[notifier] send_video error: {e}")
+        return False
+
+
 def send_catalogo(phone: str) -> bool:
     return send_document(
         phone,
         CATALOGO_PDF_URL,
-        "📚 Catálogo completo Sublime Store 2025",
+        "📚 Catálogo completo Sublime Store — elige tu diseño favorito",
     )
 
 
