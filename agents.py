@@ -195,16 +195,20 @@ Antes de entregar tu respuesta JSON verifica:
 
 def construir_prompt_fidelio(state: dict) -> str:
     """Inyecta el estado actual del lead en el prompt."""
-    return SYSTEM_FIDELIO.format(
-        estado_actual=state.get("estado_actual", "nuevo_lead"),
-        name=state.get("name") or "desconocido",
-        city=state.get("city") or "no indicada",
-        diseno_elegido=state.get("diseno_elegido") or "no elegido",
-        metodo_pago=state.get("metodo_pago") or "no elegido",
-        tiene_direccion="sí" if state.get("direccion") else "no",
-        tiene_celular="sí" if state.get("celular_cliente") else "no",
-        tiene_cedula="sí" if state.get("cedula") else "no",
-    )
+    replacements = {
+        "{estado_actual}": state.get("estado_actual", "nuevo_lead"),
+        "{name}": state.get("name") or "desconocido",
+        "{city}": state.get("city") or "no indicada",
+        "{diseno_elegido}": state.get("diseno_elegido") or "no elegido",
+        "{metodo_pago}": state.get("metodo_pago") or "no elegido",
+        "{tiene_direccion}": "sí" if state.get("direccion") else "no",
+        "{tiene_celular}": "sí" if state.get("celular_cliente") else "no",
+        "{tiene_cedula}": "sí" if state.get("cedula") else "no",
+    }
+    prompt = SYSTEM_FIDELIO
+    for placeholder, value in replacements.items():
+        prompt = prompt.replace(placeholder, str(value))
+    return prompt
 
 
 def parse_response(raw: str) -> dict:
