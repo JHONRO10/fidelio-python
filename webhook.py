@@ -30,16 +30,20 @@ async def webhook(request: Request):
         data = body.get("data", {})
         key = data.get("key", {})
 
-        if key.get("fromMe"):
+        from_me = key.get("fromMe", False)
+        remote_jid = key.get("remoteJid", "")
+        message_obj = data.get("message", {})
+        msg_keys = list(message_obj.keys()) if message_obj else []
+        print(f"[webhook] jid={remote_jid} fromMe={from_me} msg_keys={msg_keys}")
+
+        if from_me:
             return {"status": "ignored"}
 
-        remote_jid = key.get("remoteJid", "")
         phone = remote_jid.replace("@s.whatsapp.net", "").replace("@c.us", "")
 
         if not phone:
             return {"status": "no_phone"}
 
-        message_obj = data.get("message", {})
         text = (
             message_obj.get("conversation")
             or message_obj.get("extendedTextMessage", {}).get("text")
@@ -47,6 +51,7 @@ async def webhook(request: Request):
         ).strip()
 
         if not text:
+            print(f"[webhook] no_text para {phone} — msg_keys={msg_keys}")
             return {"status": "no_text"}
 
         lock = _get_lock(phone)
