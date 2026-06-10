@@ -51,7 +51,7 @@ def nodo_cargar_lead(state: FIDELIOState) -> dict:
                 "nuevo_estado": "normal",
                 "signal": "NORMAL",
                 "datos_capturados": {}
-            })
+            }, ensure_ascii=False)
             messages.append(AIMessage(content=wrapped))
 
     return {
