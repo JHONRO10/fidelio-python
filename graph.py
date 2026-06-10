@@ -155,7 +155,7 @@ def nodo_enviar_y_actuar(state: FIDELIOState) -> dict:
         crear_orden(
             lead_id=lead_id,
             diseno=state.get("diseno_elegido") or "no especificado",
-            precio=65000 if state.get("metodo_pago") == "anticipado" else 68000,
+            precio=57000 if state.get("metodo_pago") == "anticipado" else 62000,
             metodo_pago=state.get("metodo_pago") or "anticipado",
             direccion=state.get("direccion") or "",
             cedula=state.get("cedula") or "",
@@ -200,7 +200,11 @@ def build_graph():
     graph.add_node("guardar_salida", nodo_guardar_salida)
 
     graph.add_edge(START, "cargar_lead")
-    graph.add_edge("cargar_lead", "generar_respuesta")
+    graph.add_conditional_edges(
+        "cargar_lead",
+        lambda s: END if s.get("estado_actual") == "pedido_confirmado" else "generar_respuesta",
+        {"generar_respuesta": "generar_respuesta", END: END},
+    )
     graph.add_edge("generar_respuesta", "actualizar_datos")
     graph.add_edge("actualizar_datos", "enviar_y_actuar")
     graph.add_edge("enviar_y_actuar", "guardar_salida")
