@@ -32,11 +32,17 @@ def cargar_lead(phone: str) -> dict | None:
 
 def crear_lead(phone: str) -> dict:
     sb = get_supabase()
-    res = sb.table("sublime_leads").insert({
-        "phone": phone,
-        "estado_actual": "esperando_reaccion_inicial",
-    }).execute()
-    return res.data[0]
+    print(f"[db.crear_lead] insertando phone={phone}")
+    try:
+        res = sb.table("sublime_leads").insert({
+            "phone": phone,
+            "estado_actual": "esperando_reaccion_inicial",
+        }).execute()
+        print(f"[db.crear_lead] OK id={res.data[0]['id'] if res.data else 'sin_data'}")
+        return res.data[0]
+    except Exception as e:
+        print(f"[db.crear_lead] ERROR: {e}")
+        raise
 
 
 def actualizar_lead(phone: str, campos: dict) -> None:

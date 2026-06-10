@@ -3,6 +3,7 @@
 
 import os
 import json as json_module
+from datetime import datetime, timezone
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END
@@ -34,10 +35,14 @@ llm = ChatOpenAI(
 def nodo_cargar_lead(state: FIDELIOState) -> dict:
     """Carga o crea el lead en Supabase. Inyecta datos al estado."""
     phone = state["phone"]
+    print(f"[cargar_lead] buscando phone={phone}")
     lead = cargar_lead(phone)
+    print(f"[cargar_lead] encontrado={bool(lead)}")
 
     if not lead:
+        print(f"[cargar_lead] creando nuevo lead")
         lead = crear_lead(phone)
+        print(f"[cargar_lead] lead creado id={lead.get('id')}")
 
     historial_raw = cargar_historial(lead["id"])
     messages = []
@@ -117,9 +122,11 @@ def nodo_actualizar_datos(state: FIDELIOState) -> dict:
             campos[col] = val
 
     campos["estado_actual"] = state["nuevo_estado"]
-    campos["ultimo_mensaje_at"] = "now()"
+    campos["ultimo_mensaje_at"] = datetime.now(timezone.utc).isoformat()
 
+    print(f"[actualizar_datos] phone={state['phone']} campos={list(campos.keys())}")
     actualizar_lead(state["phone"], campos)
+    print(f"[actualizar_datos] OK")
 
     # Actualizar state local también
     updates = {}
@@ -181,12 +188,14 @@ def nodo_guardar_salida(state: FIDELIOState) -> dict:
     """Guarda mensajes en historial de conversaciones."""
     lead_id = state.get("lead_id", "")
     estado = state["nuevo_estado"]
+    print(f"[guardar_salida] lead_id={lead_id} estado={estado}")
 
     guardar_mensaje(lead_id, "user", state["message"], estado)
     guardar_mensaje(
         lead_id, "assistant", state["mensaje_respuesta"],
         estado, state["signal"]
     )
+    print(f"[guardar_salida] OK")
 
     return {"messages": [AIMessage(content=state["mensaje_respuesta"])]}
 

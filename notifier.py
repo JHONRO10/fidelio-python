@@ -42,6 +42,7 @@ def send_text(phone: str, text: str) -> bool:
             json={"number": phone, "text": text},
             timeout=10,
         )
+        print(f"[send_text] phone={phone} status={res.status_code} resp={res.text[:120]}")
         return res.status_code == 201
     except Exception as e:
         print(f"[notifier] send_text error: {e}")
