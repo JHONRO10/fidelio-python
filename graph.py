@@ -2,6 +2,7 @@
 # Principios: nodos de propósito único, routing explícito, fail-open
 
 import os
+import json as json_module
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END
@@ -24,6 +25,7 @@ llm = ChatOpenAI(
     model=os.environ.get("OPENAI_MODEL", "gpt-4o"),
     temperature=0.3,
     timeout=30,
+    model_kwargs={"response_format": {"type": "json_object"}},
 )
 
 
@@ -43,7 +45,14 @@ def nodo_cargar_lead(state: FIDELIOState) -> dict:
         if row["role"] == "user":
             messages.append(HumanMessage(content=row["mensaje"]))
         else:
-            messages.append(AIMessage(content=row["mensaje"]))
+            # Wrap in JSON so the LLM sees consistent format with the system prompt
+            wrapped = json_module.dumps({
+                "mensaje": row["mensaje"],
+                "nuevo_estado": "normal",
+                "signal": "NORMAL",
+                "datos_capturados": {}
+            })
+            messages.append(AIMessage(content=wrapped))
 
     return {
         "lead_id": lead["id"],
