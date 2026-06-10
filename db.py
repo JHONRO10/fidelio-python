@@ -52,7 +52,7 @@ def actualizar_estado(phone: str, nuevo_estado: str) -> None:
 
 def guardar_mensaje(lead_id: str, role: str, mensaje: str, estado: str, accion: str = None) -> None:
     sb = get_supabase()
-    sb.table("conversaciones").insert({
+    sb.table("sublime_conversaciones").insert({
         "lead_id": lead_id,
         "role": role,
         "mensaje": mensaje,
@@ -64,7 +64,7 @@ def guardar_mensaje(lead_id: str, role: str, mensaje: str, estado: str, accion: 
 def cargar_historial(lead_id: str, limite: int = 20) -> list[dict]:
     sb = get_supabase()
     res = (
-        sb.table("conversaciones")
+        sb.table("sublime_conversaciones")
         .select("role, mensaje")
         .eq("lead_id", lead_id)
         .order("created_at", desc=False)
@@ -79,7 +79,7 @@ def cargar_historial(lead_id: str, limite: int = 20) -> list[dict]:
 def crear_orden(lead_id: str, diseno: str, precio: int, metodo_pago: str,
                 direccion: str, cedula: str) -> dict:
     sb = get_supabase()
-    res = sb.table("ordenes").insert({
+    res = sb.table("sublime_ordenes").insert({
         "lead_id": lead_id,
         "diseno": diseno,
         "precio": precio,
@@ -93,4 +93,4 @@ def crear_orden(lead_id: str, diseno: str, precio: int, metodo_pago: str,
 
 def actualizar_orden(lead_id: str, campos: dict) -> None:
     sb = get_supabase()
-    sb.table("ordenes").update(campos).eq("lead_id", lead_id).execute()
+    sb.table("sublime_ordenes").update(campos).eq("lead_id", lead_id).execute()
