@@ -13,10 +13,12 @@ _supabase: Client = None
 def get_supabase() -> Client:
     global _supabase
     if _supabase is None:
-        _supabase = create_client(
-            os.environ["SUPABASE_URL"],
-            os.environ["SUPABASE_SERVICE_KEY"],
+        key = (
+            os.environ.get("SUPABASE_SERVICE_KEY")
+            or os.environ.get("SUPABASE_KEY")
+            or os.environ["SUPABASE_SERVICE_KEY"]  # raises clear error if both missing
         )
+        _supabase = create_client(os.environ["SUPABASE_URL"], key)
     return _supabase
 
 
