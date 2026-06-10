@@ -85,6 +85,7 @@ def send_video(phone: str) -> bool:
             },
             timeout=20,
         )
+        print(f"[send_video] status={res.status_code} url={VIDEO_PRODUCTO_URL[:60]} resp={res.text[:200]}")
         return res.status_code == 201
     except Exception as e:
         print(f"[notifier] send_video error: {e}")
