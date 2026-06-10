@@ -118,15 +118,21 @@ def _send_via(instance: str, phone: str, text: str) -> bool:
         return False
 
 
-def notify_camilo(phone_lead: str, name: str, diseno: str, metodo: str) -> bool:
+def notify_camilo(
+    phone_lead: str, name: str, diseno: str, metodo: str,
+    direccion: str = "", celular: str = "", cedula: str = "",
+) -> bool:
     """Notifica a Camilo (via SublimeStore) y al supervisor Jhon (via NOTIFY_INSTANCE)."""
     msg = (
         f"🛒 *NUEVO PEDIDO CONFIRMADO*\n\n"
         f"📱 WhatsApp: {phone_lead}\n"
         f"👤 Cliente: {name or 'Sin nombre'}\n"
         f"🎨 Diseño: {diseno or 'No especificado'}\n"
-        f"💳 Pago: {metodo or 'No especificado'}\n\n"
-        f"Revisar en Supabase para guía de envío."
+        f"💳 Pago: {metodo or 'No especificado'}\n"
+        f"📍 Dirección: {direccion or 'No indicada'}\n"
+        f"📞 Celular: {celular or 'No indicado'}\n"
+        f"🪪 Cédula: {cedula or 'No indicada'}\n\n"
+        f"Pedido listo para procesar envío."
     )
     # Notifica a Camilo (desde la instancia del bot)
     ok1 = send_text(CAMILO_PHONE, msg)

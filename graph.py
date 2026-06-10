@@ -165,6 +165,9 @@ def nodo_enviar_y_actuar(state: FIDELIOState) -> dict:
             name=state.get("name") or "",
             diseno=state.get("diseno_elegido") or "",
             metodo=state.get("metodo_pago") or "",
+            direccion=state.get("direccion") or "",
+            celular=state.get("celular_cliente") or "",
+            cedula=state.get("cedula") or "",
         )
 
     elif signal == "ESCALAR_HUMANO":
