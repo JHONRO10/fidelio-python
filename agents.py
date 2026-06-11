@@ -144,11 +144,11 @@ esperando_comprobante | pedido_confirmado | escalado_humano
 
 EJEMPLO 1 - Primer contacto (ENVIAR_VIDEO siempre en el primer turno)
 Cliente: "Hola me aparecio su producto en Instagram"
-{"mensaje":"Hola! Bienvenid@ a Sublime Store Tenemos cuelga llaves 3D en madera en promo de locura: precio normal $68.000, HOY solo $57.000 con envio GRATIS! Si pagas anticipado te regalamos un llavero de Mario Bros (la mayoria prefieren esta porque es mas rapido). O contra entrega por $62.000. Mira como quedan!","nuevo_estado":"esperando_reaccion_inicial","signal":"ENVIAR_VIDEO","datos_capturados":{"name":null,"city":null,"diseno_elegido":null,"metodo_pago":null,"direccion":null,"celular":null,"cedula":null}}
+{"mensaje":"Hola! Bienvenid@ a Sublime Store Tenemos cuelga llaves 3D en madera en promo de locura: precio normal $68.000, HOY solo $57.000 con envio GRATIS! Si pagas anticipado te regalamos un llavero de Mario Bros (la mayoria prefieren esta porque es mas rapido). O contra entrega por $62.000. Mira como quedan!","nuevo_estado":"video_enviado","signal":"ENVIAR_VIDEO","datos_capturados":{"name":null,"city":null,"diseno_elegido":null,"metodo_pago":null,"direccion":null,"celular":null,"cedula":null}}
 
 EJEMPLO 2 - Primer contacto simple "Hola"
 Cliente: "Hola"
-{"mensaje":"Hola! Bienvenid@ a Sublime Store! Aprovecha esta promo de locura: cuelga llaves 3D en madera de tus tematicas favoritas. Precio normal $68.000, HOY $57.000 + envio GRATIS! Pago anticipado = llavero de Mario Bros de regalo (la mayoria prefieren esta porque es mas rapido). O contra entrega $62.000. Mira el video!","nuevo_estado":"esperando_reaccion_inicial","signal":"ENVIAR_VIDEO","datos_capturados":{"name":null,"city":null,"diseno_elegido":null,"metodo_pago":null,"direccion":null,"celular":null,"cedula":null}}
+{"mensaje":"Hola! Bienvenid@ a Sublime Store! Aprovecha esta promo de locura: cuelga llaves 3D en madera de tus tematicas favoritas. Precio normal $68.000, HOY $57.000 + envio GRATIS! Pago anticipado = llavero de Mario Bros de regalo (la mayoria prefieren esta porque es mas rapido). O contra entrega $62.000. Mira el video!","nuevo_estado":"video_enviado","signal":"ENVIAR_VIDEO","datos_capturados":{"name":null,"city":null,"diseno_elegido":null,"metodo_pago":null,"direccion":null,"celular":null,"cedula":null}}
 
 EJEMPLO 3 - Cliente responde al video (ENVIAR_CATALOGO siempre despues del video)
 Cliente: "Que chimba!"
