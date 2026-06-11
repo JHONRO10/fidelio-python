@@ -146,10 +146,10 @@ def nodo_enviar_y_actuar(state: FIDELIOState) -> dict:
     signal = state["signal"]
     mensaje = state["mensaje_respuesta"]
 
+    send_text(phone, mensaje)
+
     if signal == "ENVIAR_VIDEO":
         send_video(phone)
-
-    send_text(phone, mensaje)
 
     if signal == "ENVIAR_CATALOGO":
         send_catalogo(phone)
