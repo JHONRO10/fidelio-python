@@ -9,6 +9,7 @@ load_dotenv()
 EVOLUTION_URL = os.environ.get("EVOLUTION_API_URL", "")
 EVOLUTION_KEY = os.environ.get("EVOLUTION_API_KEY", "")
 EVOLUTION_INSTANCE = os.environ.get("EVOLUTION_INSTANCE", "")
+print(f"[notifier] EVOLUTION_INSTANCE={EVOLUTION_INSTANCE!r} EVOLUTION_URL={EVOLUTION_URL!r}")
 
 CATALOGO_PDF_URL = os.environ.get("CATALOGO_PDF_URL", "")
 VIDEO_PRODUCTO_URL = os.environ.get("VIDEO_PRODUCTO_URL", "")
