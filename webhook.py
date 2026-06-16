@@ -1,14 +1,55 @@
 # webhook.py — FastAPI entry point para FIDELIO
 
 import threading
+import unicodedata
 from fastapi import FastAPI, Request
 from graph import process_message
+from db import cargar_lead
 
 app = FastAPI(title="FIDELIO — Sublime Store Agent", version="1.0")
 
 # Deduplicación: evita procesar el mismo mensaje dos veces en paralelo
 _locks: dict[str, threading.Lock] = {}
 _locks_mutex = threading.Lock()
+
+# PAUTA GATE — solo leads nuevos necesitan la frase del anuncio Meta Ads
+# Cada sublist = conjunto AND (todas las palabras deben estar presentes)
+# Entre sublists = OR (basta con que una pase)
+_PAUTA_SETS = [
+    ["instagram", "interesa"],   # "Los vi en Instagram y me interesa su producto"
+    ["cuelga llaves"],            # "me interesa su producto de cuelga llaves"
+]
+
+
+def _normalizar(texto: str) -> str:
+    """Minúsculas sin tildes."""
+    return "".join(
+        c for c in unicodedata.normalize("NFD", texto.lower())
+        if unicodedata.category(c) != "Mn"
+    )
+
+
+def _pasa_pauta_gate(phone: str, texto: str) -> bool:
+    """
+    Retorna True si el mensaje puede ser procesado por FIDELIO.
+    Leads existentes (con historial en Supabase) pasan siempre.
+    Leads nuevos solo pasan si el texto contiene las palabras clave del anuncio.
+    """
+    try:
+        lead = cargar_lead(phone)
+        if lead:
+            return True  # lead con historial → siempre pasa
+    except Exception as e:
+        print(f"[pauta_gate] error consultando lead {phone}: {e}")
+        return True  # fail-open: si hay error en DB, no bloqueamos
+
+    texto_norm = _normalizar(texto)
+    for keyword_set in _PAUTA_SETS:
+        if all(kw in texto_norm for kw in keyword_set):
+            return True  # encontró un conjunto válido
+
+    print(f"[pauta_gate] BLOQUEADO {phone} — mensaje: {texto[:80]}")
+    return False
 
 
 def _get_lock(phone: str) -> threading.Lock:
@@ -53,6 +94,10 @@ async def webhook(request: Request):
         if not text:
             print(f"[webhook] no_text para {phone} — msg_keys={msg_keys}")
             return {"status": "no_text"}
+
+        # PAUTA GATE — filtro antes de procesar
+        if not _pasa_pauta_gate(phone, text):
+            return {"status": "blocked_pauta_gate"}
 
         lock = _get_lock(phone)
         if not lock.acquire(blocking=False):
