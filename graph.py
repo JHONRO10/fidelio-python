@@ -92,6 +92,17 @@ def nodo_generar_respuesta(state: FIDELIOState) -> dict:
     if nuevo_estado not in ESTADOS_VALIDOS:
         nuevo_estado = state["estado_actual"]
 
+    # Estado determinístico por señal — no depender del LLM para transiciones críticas
+    SIGNAL_TO_STATE = {
+        "ENVIAR_VIDEO": "video_enviado",
+        "ENVIAR_CATALOGO": "catalogo_enviado",
+        "ENVIAR_DATOS_PAGO": "esperando_comprobante",
+        "CREAR_ORDEN": "pedido_confirmado",
+        "ESCALAR_HUMANO": "escalado_humano",
+    }
+    if signal in SIGNAL_TO_STATE:
+        nuevo_estado = SIGNAL_TO_STATE[signal]
+
     return {
         "mensaje_respuesta": parsed.get("mensaje", ""),
         "signal": signal,
