@@ -125,37 +125,28 @@ def notify_camilo(
     phone_lead: str, name: str, diseno: str, metodo: str,
     direccion: str = "", celular: str = "", cedula: str = "",
 ) -> bool:
-    """Notifica a Camilo (via SublimeStore) y al supervisor Jhon (via NOTIFY_INSTANCE)."""
+    """Notifica a Camilo via Fidelio. Solo Camilo — sin copias a Aria ni a Rubén."""
     msg = (
-        f"🛒 *NUEVO PEDIDO CONFIRMADO*\n\n"
-        f"📱 WhatsApp: {phone_lead}\n"
-        f"👤 Cliente: {name or 'Sin nombre'}\n"
-        f"🎨 Diseño: {diseno or 'No especificado'}\n"
-        f"💳 Pago: {metodo or 'No especificado'}\n"
-        f"📍 Dirección: {direccion or 'No indicada'}\n"
-        f"📞 Celular: {celular or 'No indicado'}\n"
-        f"🪪 Cédula: {cedula or 'No indicada'}\n\n"
-        f"Pedido listo para procesar envío."
+        f"NUEVO PEDIDO CONFIRMADO\n\n"
+        f"WhatsApp: {phone_lead}\n"
+        f"Cliente: {name or 'Sin nombre'}\n"
+        f"Diseno: {diseno or 'No especificado'}\n"
+        f"Pago: {metodo or 'No especificado'}\n"
+        f"Direccion: {direccion or 'No indicada'}\n"
+        f"Celular: {celular or 'No indicado'}\n"
+        f"Cedula: {cedula or 'No indicada'}\n\n"
+        f"Pedido listo para procesar envio."
     )
-    # Notifica a Camilo (desde la instancia del bot)
-    ok1 = send_text(CAMILO_PHONE, msg)
-    # Notifica al supervisor/dueño (desde instancia Aria, para que le llegue al número de Jhon)
-    ok2 = True
-    if OWNER_PHONE and OWNER_PHONE != EVOLUTION_INSTANCE:
-        ok2 = _send_via(NOTIFY_INSTANCE, OWNER_PHONE, msg)
-    return ok1 and ok2
+    return send_text(CAMILO_PHONE, msg)
 
 
 def notify_escalar(phone_lead: str, ultimo_mensaje: str) -> bool:
-    """Escala conversación — notifica a Camilo y al supervisor."""
+    """Escala conversación — notifica solo a Camilo via Fidelio."""
     msg = (
-        f"⚠️ *ATENCIÓN REQUERIDA*\n\n"
-        f"📱 Cliente: {phone_lead}\n"
-        f"💬 Último mensaje: {ultimo_mensaje[:200]}\n\n"
-        f"El cliente necesita atención humana."
+        f"ATENCION REQUERIDA\n\n"
+        f"Cliente: {phone_lead}\n"
+        f"Ultimo mensaje: {ultimo_mensaje[:200]}\n\n"
+        f"El cliente necesita atencion humana."
     )
-    ok1 = send_text(CAMILO_PHONE, msg)
-    ok2 = True
-    if OWNER_PHONE and OWNER_PHONE != EVOLUTION_INSTANCE:
-        ok2 = _send_via(NOTIFY_INSTANCE, OWNER_PHONE, msg)
+    return send_text(CAMILO_PHONE, msg)
     return ok1 and ok2
