@@ -149,4 +149,3 @@ def notify_escalar(phone_lead: str, ultimo_mensaje: str) -> bool:
         f"El cliente necesita atencion humana."
     )
     return send_text(CAMILO_PHONE, msg)
-    return ok1 and ok2
